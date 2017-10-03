@@ -38,7 +38,7 @@ const (
 	subsystemText = "Podsystem: "
 	timeText      = "Cas: "
 	zoneText      = "Zona: "
-	fromText	  = "Z: "
+	fromText      = "Z: "
 )
 
 // Paradox Bootstrap function
@@ -46,6 +46,7 @@ func Paradox(m *email.Message, sms *structures.SMSMessage) {
 	lines := strings.Split(string(m.Body[:]), "\n")
 	sms.Site = getSite(lines[1])
 	log.Println(sms.Site)
+	log.Println(m)
 	log.Println("Processing...")
 	processMessage(lines, sms)
 }
