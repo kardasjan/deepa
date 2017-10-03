@@ -38,7 +38,7 @@ const (
 	subsystemText = "Podsystem: "
 	timeText      = "Cas: "
 	zoneText      = "Zona: "
-	fromText      = "Z: "
+	fromText      = "z: "
 )
 
 // Paradox Bootstrap function
@@ -46,7 +46,6 @@ func Paradox(m *email.Message, sms *structures.SMSMessage) {
 	lines := strings.Split(string(m.Body[:]), "\n")
 	sms.Site = getSite(lines[1])
 	log.Println(sms.Site)
-	log.Println(lines)
 	log.Println("Processing...")
 	processMessage(lines, sms)
 }
@@ -85,7 +84,7 @@ func testEmail(sms *structures.SMSMessage) {
 func onOff(sms *structures.SMSMessage, lines []string, status bool) {
 	sms.Body = helpers.GetLastElement(lines[2], messageText) + "\n"
 	sms.Body += helpers.GetLastElement(lines[3], subsystemText) + "\n"
-	//sms.Body += helpers.GetLastElement(lines[4], fromText) + "\n"
+	sms.Body += "Z účtu: " + helpers.GetLastElement(lines[4], fromText) + "\n"
 	sms.Datetime = parseDate(helpers.GetLastElement(lines[5], timeText))
 	if status {
 		sms.MsgType = bson.ObjectIdHex(onMsgType)
