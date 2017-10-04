@@ -32,6 +32,7 @@ func Geovision(m *email.Message, sms *structures.SMSMessage) {
 
 // Find out what message is on the input
 func processMessage(body []byte, sms *structures.SMSMessage) {
+	log.Println(string(body))
 	if strings.Contains(string(body), intruderMessage) {
 		log.Println("Intruder!")
 		intruder(string(body), sms)
