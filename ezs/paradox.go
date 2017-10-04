@@ -52,6 +52,7 @@ func Paradox(m *email.Message, sms *structures.SMSMessage) {
 
 // Find out what message is on the input
 func processMessage(lines []string, sms *structures.SMSMessage) {
+	log.Println(lines)
 	if strings.Contains(lines[2], testText) {
 		testEmail(sms)
 	} else if strings.Contains(lines[2], onText) {
