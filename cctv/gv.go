@@ -22,7 +22,7 @@ const (
 
 	intruderMessage  = "Intruder detected"
 	videolostMessage = "Video Lost"
-	fulldiskMessage  = "Disk storage"
+	fulldiskMessage  = "Disk storage space low detected."
 )
 
 // Geovision geovision pipe
@@ -38,6 +38,9 @@ func processMessage(body []byte, sms *structures.SMSMessage) {
 	} else if strings.Contains(string(body), videolostMessage) {
 		log.Println("Video Lost!")
 		videolost(string(body), sms)
+	} else if strings.Contains(string(body), fulldiskMessage) {
+		log.Println("Full disk!")
+		fulldisk(string(body), sms)
 	} else {
 		log.Printf("WARN: Message not recognized!")
 		unknown(string(body), sms)
@@ -63,6 +66,12 @@ func videolost(body string, sms *structures.SMSMessage) {
 	sms.Body += "Kamera: " + camera + "\n"
 	sms.Datetime = parseDate(time)
 	sms.MsgType = bson.ObjectIdHex(videolostMsgType)
+}
+
+func fulldisk(body string, sms *structures.SMSMessage) {
+	sms.Body = "Disk je plný!\n"
+	sms.Datetime = time.Now()
+	sms.MsgType = bson.ObjectIdHex(fulldiskMsgType)
 }
 
 func unknown(body string, sms *structures.SMSMessage) {
