@@ -41,8 +41,8 @@ const (
 	fromText      = "z: "
 )
 
-// Paradox Bootstrap function
-func Paradox(m *email.Message, sms *structures.SMSMessage) {
+// IP150 Bootstrap function
+func IP150(m *email.Message, sms *structures.SMSMessage) {
 	lines := strings.Split(string(m.Body[:]), "\n")
 	sms.Site = getSite(lines[1])
 	log.Println(sms.Site)

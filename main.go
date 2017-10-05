@@ -41,7 +41,8 @@ func main() {
 	log.SetOutput(f)
 
 	// Gather Flags
-	prdx := flag.Bool("paradox", false, "Incoming message is from Paradox IP module")
+	ip150 := flag.Bool("ip150", false, "Incoming message is from Paradox IP150 module")
+	iprs := flag.Bool("iprs", false, "Incoming message is from Paradox IPRS")
 	gv := flag.Bool("geovision", false, "Incoming message is from Geovision CCTV software (Supports Analog & Digital)")
 
 	testdb := flag.Bool("testdb", false, "Fills database with test data")
@@ -58,21 +59,25 @@ func main() {
 	// Generate SMS Message object
 	smsMsg := &structures.SMSMessage{Retries: 0}
 
-	if *prdx {
+	if *ip150 {
 		m := helpers.RecieveMessage()
-		paradox(smsMsg, session, m)
+		runIP150(smsMsg, session, m)
+	}
+	if *iprs {
+		m := helpers.RecieveMessage()
+		runIPRS(smsMsg, session, m)
 	}
 	if *prdxTest {
 		m := helpers.TestParadoxTest()
-		paradox(smsMsg, session, m)
+		runIP150(smsMsg, session, m)
 	}
 	if *gv {
 		m := helpers.RecieveMessage()
-		geovision(smsMsg, session, m)
+		runGeovision(smsMsg, session, m)
 	}
 	if *gvTest {
 		m := helpers.TestVideoLost()
-		geovision(smsMsg, session, m)
+		runGeovision(smsMsg, session, m)
 	}
 	if *testdb {
 		log.Println("Inserting test data into DB")
@@ -89,11 +94,11 @@ func main() {
 	}
 }
 
-func paradox(sms *structures.SMSMessage, session *mgo.Session, m *email.Message) {
-	log.Println("Paradox")
+func runIP150(sms *structures.SMSMessage, session *mgo.Session, m *email.Message) {
+	log.Println("IP150")
 
-	// Process Paradox message, data in sms.Message struct
-	ezs.Paradox(m, sms)
+	// Process Paradox IP150 message, data in sms.Message struct
+	ezs.IP150(m, sms)
 
 	// Get site object
 	site := database.GetSiteBySlug(sms.Site, session)
@@ -103,7 +108,12 @@ func paradox(sms *structures.SMSMessage, session *mgo.Session, m *email.Message)
 	helpers.EnqueueByMsgType(sms, session)
 }
 
-func geovision(sms *structures.SMSMessage, session *mgo.Session, m *email.Message) {
+func runIPRS(sms *structures.SMSMessage, session *mgo.Session, m *email.Message) {
+	log.Println("IPRS")
+	ezs.IPRS(m, sms)
+}
+
+func runGeovision(sms *structures.SMSMessage, session *mgo.Session, m *email.Message) {
 	log.Println("Geovision")
 
 	sms.Site = helpers.GetLastElement(m.Header.Get("subject"), "_")
