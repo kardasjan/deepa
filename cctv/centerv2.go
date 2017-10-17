@@ -10,4 +10,5 @@ import (
 // CenterV2 geovision pipe
 func CenterV2(m *email.Message, sms *structures.SMSMessage) {
 	log.Println(m)
+	log.Println("Body: " + string(m.Body))
 }
