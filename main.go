@@ -44,6 +44,7 @@ func main() {
 	ip150 := flag.Bool("ip150", false, "Incoming message is from Paradox IP150 module")
 	iprs := flag.Bool("iprs", false, "Incoming message is from Paradox IPRS")
 	gv := flag.Bool("geovision", false, "Incoming message is from Geovision CCTV software (Supports Analog & Digital)")
+	centerv2 := flag.Bool("centerv2", false, "Incoming message is from Geovision CenterV2")
 
 	testdb := flag.Bool("testdb", false, "Fills database with test data")
 	prdxTest := flag.Bool("paradoxTest", false, "Test paradox functionality")
@@ -74,6 +75,10 @@ func main() {
 	if *gv {
 		m := helpers.RecieveMessage()
 		runGeovision(smsMsg, session, m)
+	}
+	if *centerv2 {
+		m := helpers.RecieveMessage()
+		runCenterV2(smsMsg, session, m)
 	}
 	if *gvTest {
 		m := helpers.TestVideoLost()
@@ -111,6 +116,12 @@ func runIP150(sms *structures.SMSMessage, session *mgo.Session, m *email.Message
 func runIPRS(sms *structures.SMSMessage, session *mgo.Session, m *email.Message) {
 	log.Println("IPRS")
 	ezs.IPRS(m, sms)
+}
+
+func runCenterV2(sms *structures.SMSMessage, session *mgo.Session, m *email.Message) {
+	log.Println("CenterV2")
+	cctv.CenterV2(m, sms)
+}
 }
 
 func runGeovision(sms *structures.SMSMessage, session *mgo.Session, m *email.Message) {
