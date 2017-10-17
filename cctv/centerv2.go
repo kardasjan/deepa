@@ -9,5 +9,5 @@ import (
 
 // CenterV2 geovision pipe
 func CenterV2(m *email.Message, sms *structures.SMSMessage) {
-	log.Println(string(m.Body))
+	log.Println(m)
 }
