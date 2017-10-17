@@ -122,7 +122,6 @@ func runCenterV2(sms *structures.SMSMessage, session *mgo.Session, m *email.Mess
 	log.Println("CenterV2")
 	cctv.CenterV2(m, sms)
 }
-}
 
 func runGeovision(sms *structures.SMSMessage, session *mgo.Session, m *email.Message) {
 	log.Println("Geovision")
