@@ -31,3 +31,11 @@ func PrepareSMS(sms *structures.SMSMessage) {
 	sms.Body += dt + "\n"
 	sms.Body += sms.SiteName
 }
+
+// PrepareSMSWithEmail ...
+func PrepareSMSWithEmail(sms *structures.SMSMessage) {
+	dt := monday.Format(sms.Datetime, "2. January 2006 15:04", monday.LocaleCsCZ)
+	sms.Body += dt + "\n"
+	sms.Body += "Obrázky zaslány emailem" + "\n"
+	sms.Body += sms.SiteName
+}

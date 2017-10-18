@@ -3,6 +3,8 @@ package helpers
 import (
 	"log"
 
+	"github.com/veqryn/go-email/email"
+
 	"github.com/kardasjan/deepa/structures"
 	"gopkg.in/mgo.v2"
 )
@@ -12,6 +14,12 @@ func EnqueueByMsgType(sms *structures.SMSMessage, session *mgo.Session) {
 	// Gather phone numbers and send the message
 	contacts := GetMsgTypeReceivers(sms.MsgType, sms.Site, session)
 	EnqueueAll(contacts, sms, session)
+}
+
+// EnqueueByMsgTypeWithEmail ...
+func EnqueueByMsgTypeWithEmail(sms *structures.SMSMessage, session *mgo.Session, images []*email.Message) {
+	contacts := GetMsgTypeReceivers(sms.MsgType, sms.Site, session)
+	EnqueueAllWithEmail(contacts, sms, images, session)
 }
 
 // EnqueueByService ...
@@ -28,6 +36,17 @@ func EnqueueAll(contacts []structures.Contact, sms *structures.SMSMessage, sessi
 	for _, contact := range contacts {
 		sms.Phone = contact.Phone
 		SendSMSRest(sms.Phone, sms.Body)
-		// database.QueueMessage(sms, session)
+	}
+}
+
+// EnqueueAllWithEmail ...
+func EnqueueAllWithEmail(contacts []structures.Contact, sms *structures.SMSMessage, images []*email.Message, session *mgo.Session) {
+	PrepareSMSWithEmail(sms)
+	log.Println("SMS with Email Prepared!")
+
+	for _, contact := range contacts {
+		sms.Phone = contact.Phone
+		SendSMSRest(sms.Phone, sms.Body)
+		SendEmail(contact.Email, sms.Body, images)
 	}
 }

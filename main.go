@@ -130,7 +130,19 @@ func runCenterV2(sms *structures.SMSMessage, session *mgo.Session, m *email.Mess
 
 func runImggeo(sms *structures.SMSMessage, session *mgo.Session, m *email.Message) {
 	log.Println("ImgGeo")
-	cctv.Imggeo(m, sms)
+
+	sms.Site = helpers.GetLastElement(m.Header.Get("subject"), "_")
+	log.Println("Site: " + sms.Site)
+
+	var images []*email.Message
+	cctv.Imggeo(m, sms, images)
+
+	// Get site object
+	site := database.GetSiteBySlug(sms.Site, session)
+	sms.SiteName = site.Name
+
+	// Enqueue
+	helpers.EnqueueByMsgTypeWithEmail(sms, session, images)
 }
 
 func runGeovision(sms *structures.SMSMessage, session *mgo.Session, m *email.Message) {
