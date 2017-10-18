@@ -1,4 +1,4 @@
-#Watch
+#Deepa
 This project is created for sending SMS messages of alarm, videolost and alike messages
 trigerred by various systems. Main function receives piped message from STDIN (Postfix pipe
 for example).
