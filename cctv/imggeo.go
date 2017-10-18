@@ -12,6 +12,7 @@ func Imggeo(m *email.Message, sms *structures.SMSMessage) {
 	for _, part := range m.MessagesAll() {
 		mediaType, params, err := part.Header.ContentType()
 		if err != nil {
+			log.Println(mediaType)
 			switch mediaType {
 			case "text/plain":
 				log.Println(part)
