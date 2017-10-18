@@ -45,13 +45,14 @@ func main() {
 	iprs := flag.Bool("iprs", false, "Incoming message is from Paradox IPRS")
 	gv := flag.Bool("geovision", false, "Incoming message is from Geovision CCTV software (Supports Analog & Digital)")
 	centerv2 := flag.Bool("centerv2", false, "Incoming message is from Geovision CenterV2")
+	imggeo := flag.Bool("imggeo", false, "Incoming message is from Geovision and consists image attachments")
 
 	testdb := flag.Bool("testdb", false, "Fills database with test data")
 	prdxTest := flag.Bool("paradoxTest", false, "Test paradox functionality")
 	gvTest := flag.Bool("gvTest", false, "Test geovision functionality")
 
-	port := flag.Bool("port", false, "Start port checking")
-	portTest := flag.Bool("portTest", false, "Test port functionality")
+	port := flag.Bool("port", false, "Start port checking")             // Needs testing
+	portTest := flag.Bool("portTest", false, "Test port functionality") // TODO
 
 	restTest := flag.Bool("restTest", false, "Test REST API")
 
@@ -79,6 +80,10 @@ func main() {
 	if *centerv2 {
 		m := helpers.RecieveMessage()
 		runCenterV2(smsMsg, session, m)
+	}
+	if *imggeo {
+		m := helpers.RecieveMessage()
+		runImggeo(smsMsg, session, m)
 	}
 	if *gvTest {
 		m := helpers.TestVideoLost()
@@ -121,6 +126,11 @@ func runIPRS(sms *structures.SMSMessage, session *mgo.Session, m *email.Message)
 func runCenterV2(sms *structures.SMSMessage, session *mgo.Session, m *email.Message) {
 	log.Println("CenterV2")
 	cctv.CenterV2(m, sms)
+}
+
+func runImggeo(sms *structures.SMSMessage, session *mgo.Session, m *email.Message) {
+	log.Println("ImgGeo")
+	cctv.Imggeo(m, sms)
 }
 
 func runGeovision(sms *structures.SMSMessage, session *mgo.Session, m *email.Message) {
