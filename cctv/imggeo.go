@@ -10,11 +10,15 @@ import (
 // Imggeo geovision pipe
 func Imggeo(m *email.Message, sms *structures.SMSMessage) {
 	for _, part := range m.MessagesAll() {
-		mediaType, params, err := part.Header.ContentType()
+		mediaType, _, err := part.Header.ContentType()
 		if err == nil {
-			log.Println("MediaType: " + mediaType)
-			for _, param := range params {
-				log.Println("Param: " + param)
+			switch mediaType {
+			case "multipart/mixed":
+				log.Println(part)
+			case "text/plain":
+				log.Panicln("Text: " + string(part.Body))
+			case "application/octet-stream":
+				log.Println(part.Header)
 			}
 		} else {
 			log.Println(err)
